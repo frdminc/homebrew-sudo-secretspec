@@ -5,15 +5,24 @@
 class SudoSecretspec < Formula
   desc "SecretSpec engine with an opt-in macOS privilege-boundary companion"
   homepage "https://github.com/djbclark/sudo-secretspec"
-  url "https://github.com/djbclark/sudo-secretspec/archive/refs/tags/v0.19.1-sudo.4.tar.gz"
+  url "https://github.com/djbclark/sudo-secretspec/archive/refs/tags/v0.19.1-sudo.5.tar.gz"
   # Homebrew parses the trailing ".1" of the tag as the whole version, which
   # breaks upgrade detection. State it explicitly.
-  version "0.19.1-sudo.4"
-  sha256 "f15c36bcae7b8bf784293b63b851bf313bbf113a20f3a8ba43b13e77fb6d9616"
+  version "0.19.1-sudo.5"
+  sha256 "b177191d0a3496250532a40c0a384cbcd9483dde1b228e1ee8dd2f374c2c3823"
   license "Apache-2.0"
   head "https://github.com/djbclark/sudo-secretspec.git", branch: "sudo-main"
 
+  depends_on "pkg-config" => :build
   depends_on "rust" => :build
+  # The companion builds rusqlite against the system SQLite rather than the
+  # bundled copy, which hangs in libsqlite3-sys on macOS. That makes sqlite and
+  # pkg-config real build inputs: CI installs them by hand, and a tap install
+  # would otherwise fail at link time on a host without them.
+  depends_on "sqlite" => :build
+  # install.rs targets /private/etc and the sudoers boundary it manages is
+  # macOS-only, so there is nothing for this formula to do on Linux.
+  depends_on :macos
 
   def install
     system "cargo", "install", "--locked", "--root", prefix, "--path", "secretspec"
@@ -51,8 +60,8 @@ class SudoSecretspec < Formula
   end
 
   test do
-    assert_match "0.19.1-sudo.4", shell_output("#{bin}/secretspec --version")
-    assert_match "sudo-secretspec 0.19.1-sudo.4", shell_output("#{libexec}/sudo-secretspec --version")
+    assert_match "0.19.1-sudo.5", shell_output("#{bin}/secretspec --version")
+    assert_match "sudo-secretspec 0.19.1-sudo.5", shell_output("#{libexec}/sudo-secretspec --version")
     # The companion must never be linked onto PATH; see the install comment.
     refute_path_exists bin/"sudo-secretspec"
   end
