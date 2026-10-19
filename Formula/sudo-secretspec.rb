@@ -5,16 +5,19 @@
 class SudoSecretspec < Formula
   desc "SecretSpec engine with an opt-in macOS privilege-boundary companion"
   homepage "https://github.com/frdminc/sudo-secretspec"
-  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.19.1-sudo.25.tar.gz"
+  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.19.1-sudo.26.tar.gz"
   # Homebrew parses the trailing ".1" of the tag as the whole version, which
   # breaks upgrade detection. State it explicitly.
-  version "0.19.1-sudo.25"
-  sha256 "56524206aee5ce8af73f5b2ec6c784ce6ba05a3e2200014d88297edd70ed8fd2"
+  version "0.19.1-sudo.26"
+  sha256 "c5534f446c8415dae471addb58acceae2803219ad078b7276e28eec583e00037"
   license "Apache-2.0"
   head "https://github.com/frdminc/sudo-secretspec.git", branch: "sudo-main"
 
   depends_on "pkg-config" => :build
   depends_on "rust" => :build
+  # install.rs targets /private/etc and the sudoers boundary it manages is
+  # macOS-only, so there is nothing for this formula to do on Linux.
+  depends_on :macos
   # The companion builds rusqlite against the system SQLite rather than the
   # bundled copy, which hangs in libsqlite3-sys on macOS. pkg-config finds it at
   # build time, and it resolves to Homebrew's sqlite rather than the one in
@@ -23,9 +26,6 @@ class SudoSecretspec < Formula
   # dependency, not just a build one: declaring it `=> :build` would let
   # Homebrew remove sqlite and leave an installed binary that cannot start.
   depends_on "sqlite"
-  # install.rs targets /private/etc and the sudoers boundary it manages is
-  # macOS-only, so there is nothing for this formula to do on Linux.
-  depends_on :macos
 
   def install
     system "cargo", "install", "--locked", "--root", prefix, "--path", "secretspec"
@@ -66,8 +66,8 @@ class SudoSecretspec < Formula
   end
 
   test do
-    assert_match "0.19.1-sudo.25", shell_output("#{bin}/secretspec --version")
-    assert_match "sudo-secretspec 0.19.1-sudo.25", shell_output("#{libexec}/sudo-secretspec --version")
+    assert_match "0.19.1-sudo.26", shell_output("#{bin}/secretspec --version")
+    assert_match "sudo-secretspec 0.19.1-sudo.26", shell_output("#{libexec}/sudo-secretspec --version")
     # The companion must never be linked onto PATH; see the install comment.
     refute_path_exists bin/"sudo-secretspec"
   end
