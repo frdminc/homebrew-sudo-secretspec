@@ -13,6 +13,11 @@ class SudoSecretspec < Formula
   license "Apache-2.0"
   head "https://github.com/frdminc/sudo-secretspec.git", branch: "sudo-main"
 
+  bottle do
+    root_url "https://github.com/frdminc/sudo-secretspec/releases/download/v0.19.1-sudo.28"
+    sha256 cellar: :any, arm64_golden_gate: "f805fea8484d70d7c7657128a766d4aa93666dfbbb91818e207d21d611d1a889"
+  end
+
   depends_on "pkg-config" => :build
   depends_on "rust" => :build
   # install.rs targets /private/etc and the sudoers boundary it manages is
