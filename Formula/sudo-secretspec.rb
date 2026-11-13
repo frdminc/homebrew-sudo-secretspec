@@ -5,21 +5,17 @@
 class SudoSecretspec < Formula
   desc "SecretSpec engine with an opt-in macOS privilege-boundary companion"
   homepage "https://github.com/frdminc/sudo-secretspec"
-  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.21.1-sudo.5.tar.gz"
+  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.21.1-sudo.6.tar.gz"
   # Homebrew parses the trailing ".1" of the tag as the whole version, which
   # breaks upgrade detection. State it explicitly.
-  version "0.21.1-sudo.5"
-  sha256 "9731c3ede383d7004f77c57ba2560f5c1450db1a1eee0e6314c1dbd8290560d8"
+  version "0.21.1-sudo.6"
+  sha256 "ca3998de7f8345579a07969c3a19d5c5ef3457af0dc905eed02f787e8da7cf64"
   license "Apache-2.0"
   head "https://github.com/frdminc/sudo-secretspec.git", branch: "sudo-main"
 
-  bottle do
-    root_url "https://github.com/frdminc/sudo-secretspec/releases/download/v0.21.1-sudo.5"
-    sha256 cellar: :any, arm64_golden_gate: "fc6b2407b61747d7601de790a429a96356ac177a065d5c41196b188240dec5db"
-  end
-
   depends_on "pkg-config" => :build
   depends_on "rust" => :build
+  depends_on "age"
   # install.rs targets /private/etc and the sudoers boundary it manages is
   # macOS-only, so there is nothing for this formula to do on Linux.
   depends_on :macos
@@ -48,6 +44,11 @@ class SudoSecretspec < Formula
     (share/"sudo-secretspec").install "sudo-secretspec/AI-GUIDANCE.md"
     (share/"sudo-secretspec").install "sudo-secretspec/sudo-secretspec-retired.toml"
     (share/"sudo-secretspec/skills/sudo-secretspec").install "skills/sudo-secretspec/SKILL.md"
+    (share/"sudo-secretspec").install "sudo-secretspec/BACKUPS.md"
+    (share/"sudo-secretspec/backup").install "sudo-secretspec/backup/backup.py",
+                                             "sudo-secretspec/backup/observer.py",
+                                             "sudo-secretspec/backup/install.py",
+                                             "sudo-secretspec/backup/benchmark.py"
   end
 
   def caveats
@@ -71,8 +72,8 @@ class SudoSecretspec < Formula
   end
 
   test do
-    assert_match "0.21.1-sudo.5", shell_output("#{bin}/secretspec --version")
-    assert_match "sudo-secretspec 0.21.1-sudo.5", shell_output("#{libexec}/sudo-secretspec --version")
+    assert_match "0.21.1-sudo.6", shell_output("#{bin}/secretspec --version")
+    assert_match "sudo-secretspec 0.21.1-sudo.6", shell_output("#{libexec}/sudo-secretspec --version")
     # The companion must never be linked onto PATH; see the install comment.
     refute_path_exists bin/"sudo-secretspec"
   end
