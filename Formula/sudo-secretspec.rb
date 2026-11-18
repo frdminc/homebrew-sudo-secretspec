@@ -5,18 +5,13 @@
 class SudoSecretspec < Formula
   desc "SecretSpec engine with an opt-in macOS privilege-boundary companion"
   homepage "https://github.com/frdminc/sudo-secretspec"
-  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.21.1-sudo.6.tar.gz"
+  url "https://github.com/frdminc/sudo-secretspec/archive/refs/tags/v0.21.1-sudo.7.tar.gz"
   # Homebrew parses the trailing ".1" of the tag as the whole version, which
   # breaks upgrade detection. State it explicitly.
-  version "0.21.1-sudo.6"
-  sha256 "ca3998de7f8345579a07969c3a19d5c5ef3457af0dc905eed02f787e8da7cf64"
+  version "0.21.1-sudo.7"
+  sha256 "5bab9cf704305c3fde392d248026b4b55c2820e955265553f091e4bdd23e9c73"
   license "Apache-2.0"
   head "https://github.com/frdminc/sudo-secretspec.git", branch: "sudo-main"
-
-  bottle do
-    root_url "https://github.com/frdminc/sudo-secretspec/releases/download/v0.21.1-sudo.6"
-    sha256 cellar: :any, arm64_golden_gate: "5a654e13689e0b0878210b913ddb7e934459af871b78ae5deb678b0ca0c3e536"
-  end
 
   depends_on "pkg-config" => :build
   depends_on "rust" => :build
@@ -77,8 +72,8 @@ class SudoSecretspec < Formula
   end
 
   test do
-    assert_match "0.21.1-sudo.6", shell_output("#{bin}/secretspec --version")
-    assert_match "sudo-secretspec 0.21.1-sudo.6", shell_output("#{libexec}/sudo-secretspec --version")
+    assert_match "0.21.1-sudo.7", shell_output("#{bin}/secretspec --version")
+    assert_match "sudo-secretspec 0.21.1-sudo.7", shell_output("#{libexec}/sudo-secretspec --version")
     # The companion must never be linked onto PATH; see the install comment.
     refute_path_exists bin/"sudo-secretspec"
   end
