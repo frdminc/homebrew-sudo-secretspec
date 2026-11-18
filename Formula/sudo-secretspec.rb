@@ -13,6 +13,11 @@ class SudoSecretspec < Formula
   license "Apache-2.0"
   head "https://github.com/frdminc/sudo-secretspec.git", branch: "sudo-main"
 
+  bottle do
+    root_url "https://github.com/frdminc/sudo-secretspec/releases/download/v0.21.1-sudo.7"
+    sha256 cellar: :any, arm64_golden_gate: "ad7f29c26e02f0972156fbd0ee346d2c935507eeb8532940726f34cefb26d495"
+  end
+
   depends_on "pkg-config" => :build
   depends_on "rust" => :build
   depends_on "age"
